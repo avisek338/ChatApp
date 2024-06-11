@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+     <script> try{Typekit.load({async:true});}catch(e){}</script>
+    <link rel="stylesheet" href="style.css">
+     <title>start chat | chat app</title>
+</head>
+<body>
+    
+    <main>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="card" style="width: 700px; height:600px ;">
+                    <div class="card-header text-center">
+                        <span>All Users</span>
+                        <span class="float-end" data-bs-toggle="tooltip" data-bs-placement="right" title="Logout" onclick="triggerLogout()"><i class="fa fa-power-off"></i></span>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush" id="user-list" style="cursor: pointer;">
+                            
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.9.2/umd/popper.min.js" integrity="sha512-2rNj2KJ+D8s1ceNasTIex6z4HWyOnEYLVC3FigGOmyQCZc2eBXKgOxQmo3oKLHyfcj53uz4QMsRCWNbLd32Q1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+        function triggerLogout(){
+            localStorage.removeItem('chat_user_id');
+            localStorage.removeItem('chat_user_email');
+            localStorage.removeItem('loggedin_user_id');
+            location.href = "index.html";
+         }
+         if(localStorage.getItem('loggedin_user_id')==""||localStorage.getItem('loggedin_user_id')==undefined || localStorage.getItem('loggedin_user_id')==null){
+            location.href = "index.html";
+       }
+  </script>
+    <script type="module">
+  
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"; 
+    import {getAuth} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import {getDatabase,ref,onValue} from  "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+          
+        const firebaseConfig = {
+          apiKey: "AIzaSyAAzogt3jsepQppwQITw_gulYno00XGPM8", 
+          authDomain: "simplechatapp-cb0a8.firebaseapp.com",
+           databaseURL:"https://simplechatapp-cb0a8-default-rtdb.firebaseio.com/",
+          projectId: "simplechatapp-cb0a8",
+          storageBucket: "simplechatapp-cb0a8.appspot.com",
+          messagingSenderId: "279554533293",
+          appId: "1:279554533293:web:9c0b9a733ca1e625e7e324",
+          measurementId: "G-T03CW0S8NQ"
+        };
+      
+         const app = initializeApp(firebaseConfig);
+         var db = getDatabase();
+        const userRef = ref(db,"/registered_users")
+        onValue(userRef,(snapShot)=>{
+            const data = snapShot.val();
+            showUsers(data);
+        })
+       function showUsers(users){
+          var html = "";
+          for(let user in users){
+            html = html+'<li class = "list-group-item loadchat" data-user_id = "'+users[user].userid+'" data-user_email = "'+users[user].email+'" >'+users[user].email+'</li>' ;
+          }
+          $('#user-list').html(html);
+       }
+       $(document).on('click','.loadchat',function(e){
+           localStorage.setItem('chat_user_id',$(this).attr('data-user_id'));
+           localStorage.setItem('chat_user_email',$(this).attr('data-user_email'));
+           setTimeout(location.href = "chat.html",2000);
+       })
+      </script> 
+</body>
+</html>
